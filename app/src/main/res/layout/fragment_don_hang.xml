@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:screenOrientation="portrait"
+    android:orientation="vertical"
+    android:id="@+id/fragment_don_hang">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/colorOrange">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Đơn Hàng"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bttrangthai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/skip_button"
+            android:text="Trang thái hoàn thành"
+            android:layout_weight="1"
+            android:textColor="@color/colorOrange"
+            app:backgroundTint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/bttrangthaihuy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/skip_button"
+            android:text="Trạng thái huỷ"
+            android:layout_weight="1"
+            android:textColor="@color/colorOrange"
+            app:backgroundTint="#FFFFFF" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewdonhang"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

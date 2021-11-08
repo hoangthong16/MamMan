@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layoutOne"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingtoolbarlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:layout_scrollFlags="scroll|snap|enterAlwaysCollapsed">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp">
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ta Quang Buu, Hai Ba Trung, Ha Noi"
+                        android:maxLength="27"
+                        android:textSize="18dp"
+                        android:drawablePadding="8dp"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/colorDarkGrey"
+                        android:drawableLeft="@drawable/marker"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="..."
+                        android:textSize="18dp"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/colorDarkGrey"
+                        android:layout_toEndOf="@+id/location"
+                        android:layout_toRightOf="@+id/location" />
+
+                    <ImageView
+                        android:id="@+id/navigationBar"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="8dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_menu_black_24dp"
+                        app:tint="@color/colorDarkGrey" />
+
+                </RelativeLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingtoolbarlayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar1"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/white"
+                    app:layout_collapseMode="pin"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginRight="16dp"
+                        android:drawableTint="@color/colorGrey"
+                        android:textColorHint="@color/colorGrey"
+                        android:drawablePadding="8dp"
+                        android:padding="8dp"
+                        android:focusable="false"
+                        android:drawableLeft="@drawable/search"
+                        android:background="@drawable/layout_bg"
+                        android:hint="Search for Mammam"/>
+                </androidx.appcompat.widget.Toolbar>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="order"
+                    android:layout_marginTop="200dp"
+                    android:layout_marginLeft="200dp"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

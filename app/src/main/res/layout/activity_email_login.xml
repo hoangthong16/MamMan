@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EmailLoginRegister.EmailLoginActivity">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorOrange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:onClick="backToManPage"
+            android:id="@+id/imageButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/transparent"
+            android:tint="@color/white"
+            android:layout_marginLeft="16dp"
+            app:srcCompat="@drawable/back_button_icon" />
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginRight="64dp"
+        android:elevation="20dp"
+        app:cardCornerRadius="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/relativeLayout" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:text="Sign In"
+            android:textColor="@color/colorOrange"
+            android:textSize="30sp">
+
+        </TextView>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/skip_button"
+            android:drawableLeft="@drawable/email_icon"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorOrange"
+            android:elevation="20dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:padding="16dp"></EditText>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+
+            android:background="@drawable/skip_button"
+            android:drawableLeft="@drawable/password_icon"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorOrange"
+            android:elevation="20dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="16dp"></EditText>
+
+        <TextView
+            android:onClick="goToRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Don't have an account"
+            android:textColor="@color/colorOrange"
+            android:gravity="right"
+            android:elevation="20dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="48dp"
+        android:background="@color/colorOrange"
+        android:drawableRight="@drawable/right_arrow"
+        android:drawableTint="@color/white"
+        android:text="Continue"
+        android:elevation="20dp"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/colorOrange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
