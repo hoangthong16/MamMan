@@ -45,7 +45,7 @@ public class DonHangAdapter extends RecyclerView.Adapter<DonHangAdapter.DonHangV
         if(donHangModel.getTrangthai().equals("thanhcong")){
             holder.trangthai.setText("Hoàn thành");
         }else {
-            holder.trangthai.setText("Nháp");
+            holder.trangthai.setText("Huỷ");
         }
         //holder.trangthai.setText(donHangModel.getTrangthai());
     }

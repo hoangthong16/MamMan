@@ -58,6 +58,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 signIn.setVisibility(View.INVISIBLE);
 
+
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(
                         inputMobile.getText().toString(),60, TimeUnit.SECONDS,
                         PhoneLoginActivity.this,

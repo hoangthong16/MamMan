@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mamman.Adapters.MonAnAdapter;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.Model.CategoryModel;
 import com.example.mamman.Model.MonAnModel;
@@ -30,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryActivity extends AppCompatActivity implements RecyclerViewClickInterface{
+public class CategoryActivity extends AppCompatActivity implements RecyclerViewClickInterface, MonAnClickInterface {
     ImageButton btback;
     TextView tvcategory,thongbao;
     RecyclerView recyclerViewCategory;
@@ -74,8 +75,6 @@ public class CategoryActivity extends AppCompatActivity implements RecyclerViewC
         btback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(CategoryActivity.this,HomeActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -146,7 +145,7 @@ public class CategoryActivity extends AppCompatActivity implements RecyclerViewC
                          */
                     }
 
-                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelListcat,getApplicationContext(), CategoryActivity.this);
+                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelListcat,getApplicationContext(), CategoryActivity.this, CategoryActivity.this);
                     recyclerViewCategory.setAdapter(monAnAdapter);
                     monAnAdapter.notifyDataSetChanged();
 
@@ -192,5 +191,8 @@ public class CategoryActivity extends AppCompatActivity implements RecyclerViewC
     }
 
 
+    @Override
+    public void onButtonclick(int id, int position) {
 
+    }
 }

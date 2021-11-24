@@ -84,4 +84,5 @@ public class MonAnModel implements Serializable {
     public void setDongia(float dongia) {
         this.dongia = dongia;
     }
+
 }

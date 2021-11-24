@@ -40,6 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
+        android:layout_marginEnd="96dp"
         android:text="Giảm giá"
         android:textColor="@color/colorOrange"
         app:layout_constraintEnd_toEndOf="@+id/tvtenmonan"
@@ -51,8 +52,7 @@
         android:id="@+id/tvthanhtien"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="112dp"
         android:layout_marginBottom="8dp"
         android:text="Đơn giá"
         android:textColor="@color/colorDarkGrey"
@@ -77,4 +77,40 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvtenmonan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvtenmonan" />
+
+    <Button
+        android:id="@+id/btn_tru"
+        android:visibility="invisible"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/sub_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvthanhtien" />
+
+    <Button
+        android:id="@+id/btn_cong"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/add"
+        android:textColor="#B35F5F"
+        app:backgroundTint="@color/colorOrange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_soluong"
+        android:visibility="invisible"
+        android:layout_width="14dp"
+        android:layout_height="23dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_cong"
+        app:layout_constraintStart_toEndOf="@+id/btn_tru" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

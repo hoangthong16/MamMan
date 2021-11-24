@@ -40,6 +40,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
     TextView ten,soluong,gia;
     ConstraintLayout details;
     private int so=0;
+    private int position;
     String foodId="";
     private String shinh,sten,skey,scate;
     private float sgia,sgiamgia,sdanhgia;
@@ -63,7 +64,8 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         gia=(TextView)findViewById(R.id.textView13);
         themvaogiohang=(Button)findViewById(R.id.themvaogiohang);
 
-
+        position = getIntent().getIntExtra("position",-1);
+        /*
         shinh =getIntent().getStringExtra("hinhanh");
         sten =getIntent().getStringExtra("ten");
         sgia =getIntent().getFloatExtra("gia",0);
@@ -74,6 +76,23 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         sdanhgia=getIntent().getFloatExtra("danhgia",0);
         Toast.makeText(DetailsOfFoodActivity.this,skey,Toast.LENGTH_LONG).show();
 
+         */
+
+        shinh =HomeActivity.monAnModelList.get(position).getLink_hinh();
+        sten =HomeActivity.monAnModelList.get(position).getTenmonan();
+        sgia =HomeActivity.monAnModelList.get(position).getDongia();
+        skey= HomeActivity.monAnModelList.get(position).getMamonan();
+        scate= HomeActivity.monAnModelList.get(position).getCategory();
+        syeuthich= HomeActivity.monAnModelList.get(position).getYeuthich();
+        sgiamgia= HomeActivity.monAnModelList.get(position).getGiamgia();
+        sdanhgia= HomeActivity.monAnModelList.get(position).getDanhgia();
+
+
+        for(int i =0; i<HomeActivity.listgiohang.size();i++){
+            if(HomeActivity.listgiohang.get(i).getIdsp() == skey){
+                so = HomeActivity.listgiohang.get(i).getSoluongsp();
+            }
+        }
 
 
         ten.setText(sten);
@@ -86,6 +105,21 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         }else {
             yeuthich.setBackgroundResource(R.drawable.favorite);
         }
+
+        /*
+        ten.setText(HomeActivity.monAnModelList.get(position).getTenmonan());
+        Picasso.get().load(HomeActivity.monAnModelList.get(position).getLink_hinh()).into(img);
+        soluong.setText(so);
+        gia.setText(HomeActivity.monAnModelList.get(position).getDongia()+"");
+        sub.setBackgroundResource(R.drawable.sub_gray);
+        if (HomeActivity.monAnModelList.get(position).getYeuthich()){
+            yeuthich.setBackgroundResource(R.drawable.favorite_true);
+        }else {
+            yeuthich.setBackgroundResource(R.drawable.favorite);
+        }
+
+         */
+
 
         back.setOnClickListener(this);
         sub.setOnClickListener(this);
@@ -139,6 +173,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
 
         Intent intent= new Intent(getApplicationContext(),GioHangActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
@@ -146,7 +181,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.imageButton:
-                Intent intent= new Intent(DetailsOfFoodActivity.this, HomeActivity.class);
+
                 finish();
                 break;
 
@@ -178,9 +213,9 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
                 }else {
                     yeuthich.setBackgroundResource(R.drawable.favorite);
                 }
-                for (int i=0;i<OrdersFragment.monAnModelList.size();i++){
-                    if(OrdersFragment.monAnModelList.get(i).getMamonan().equals(skey)){
-                        OrdersFragment.monAnModelList.get(i).setYeuthich(syeuthich);
+                for (int i=0;i<HomeActivity.monAnModelList.size();i++){
+                    if(HomeActivity.monAnModelList.get(i).getMamonan().equals(skey)){
+                        HomeActivity.monAnModelList.get(i).setYeuthich(syeuthich);
                         databaseReference= FirebaseDatabase.getInstance().getReference("MonAn");
                         MonAnModel monAnModel = new MonAnModel(null,shinh,sten,scate,sgiamgia,sdanhgia,sgia,syeuthich);
                         databaseReference.child(skey).setValue(monAnModel);

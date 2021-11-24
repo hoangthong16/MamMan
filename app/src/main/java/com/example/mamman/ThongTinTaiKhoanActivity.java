@@ -101,6 +101,7 @@ public class ThongTinTaiKhoanActivity extends AppCompatActivity {
                 intent.putExtra("mobile","thongtin");
                 //startActivity(intent);
                 finish();
+
             }
         });
 

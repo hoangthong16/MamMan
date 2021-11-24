@@ -8,14 +8,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.mamman.Adapters.MonAnAdapter;
+import com.example.mamman.Adapters.YeuThichAdapter;
 import com.example.mamman.CategoryActivity;
 import com.example.mamman.DetailsOfFoodActivity;
+import com.example.mamman.HomeActivity;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.Model.MonAnModel;
 import com.example.mamman.R;
@@ -39,15 +44,15 @@ import java.util.List;
  * Use the {@link YeuThichFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class YeuThichFragment extends Fragment implements RecyclerViewClickInterface {
+public class YeuThichFragment extends Fragment implements RecyclerViewClickInterface, MonAnClickInterface {
     private View view;
     RecyclerView recyclerViewyeuthich;
 
     private DatabaseReference mData;
-    FirebaseRecyclerAdapter<MonAnModel, MonAnAdapter.MonAnViewHolder> adapter;
+    FirebaseRecyclerAdapter<MonAnModel, YeuThichAdapter.MonAnViewHolder> adapter;
     FirebaseRecyclerOptions<MonAnModel> options;
 
-    List<MonAnModel> monAnModelListYeuThich;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,36 +94,32 @@ public class YeuThichFragment extends Fragment implements RecyclerViewClickInter
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_yeu_thich, container, false);
-
         recyclerViewyeuthich=(RecyclerView) view.findViewById(R.id.recyclerViewyeuthich);
 
-        if(monAnModelListYeuThich != null){
-
-        }else {
-            monAnModelListYeuThich = new ArrayList<>();
-        }
         mData = FirebaseDatabase.getInstance().getReference("MonAn");
 
         options = new FirebaseRecyclerOptions.Builder<MonAnModel>()
                 .setQuery(mData,MonAnModel.class)
                 .build();
 
-        adapter=new FirebaseRecyclerAdapter<MonAnModel, MonAnAdapter.MonAnViewHolder>(options) {
+        adapter=new FirebaseRecyclerAdapter<MonAnModel, YeuThichAdapter.MonAnViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull MonAnAdapter.MonAnViewHolder holder, int position, @NonNull MonAnModel model) {
+            protected void onBindViewHolder(@NonNull YeuThichAdapter.MonAnViewHolder holder, int position, @NonNull MonAnModel model) {
 
             }
 
             @NonNull
             @Override
-            public MonAnAdapter.MonAnViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+            public YeuThichAdapter.MonAnViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
                 View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.simple_vertical_slider,viewGroup,false);
-                return  new MonAnAdapter.MonAnViewHolder(view);
+                return  new YeuThichAdapter.MonAnViewHolder(view);
             }
         };
 
@@ -133,21 +134,26 @@ public class YeuThichFragment extends Fragment implements RecyclerViewClickInter
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChildren()){
-                    monAnModelListYeuThich.clear();
+                    HomeActivity.monAnModelListYeuThich.clear();
                     for (DataSnapshot dss: snapshot.getChildren()){
                         final MonAnModel monAnModel= dss.getValue(MonAnModel.class);
-                        monAnModelListYeuThich.add(monAnModel);
+                        String key = dss.getKey();
+                        HomeActivity.monAnModelListYeuThich.add(new MonAnModel(key,monAnModel.link_hinh,monAnModel.tenmonan,monAnModel.category, monAnModel.giamgia,monAnModel.danhgia,monAnModel.dongia,monAnModel.yeuthich));
+                        //HomeActivity.monAnModelListYeuThich.add(monAnModel);
                         /*
                         if(dss.getKey() != null){
                             key.add(dss.getKey());
                         }
 
+                        String key= snapshot.getKey();
+
+
                          */
                     }
 
-                    sapxepdanhgiagiamdan();
+                    //sapxepdanhgiagiamdan();
 
-                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelListYeuThich,getContext(), YeuThichFragment.this);
+                    YeuThichAdapter monAnAdapter=new YeuThichAdapter(HomeActivity.monAnModelListYeuThich,getContext(), YeuThichFragment.this, YeuThichFragment.this);
                     recyclerViewyeuthich.setAdapter(monAnAdapter);
                     monAnAdapter.notifyDataSetChanged();
 
@@ -164,22 +170,35 @@ public class YeuThichFragment extends Fragment implements RecyclerViewClickInter
     }
 
 
+
+
     public void sapxepdanhgiagiamdan() {
-        Collections.sort(monAnModelListYeuThich,new sort());
+        Collections.sort(HomeActivity.monAnModelListYeuThich,new sort());
     }
 
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getActivity(), DetailsOfFoodActivity.class);
-        intent.putExtra("key",monAnModelListYeuThich.get(position).mamonan);
+
+        for(int i = 0; i<HomeActivity.monAnModelList.size();i++){
+            if(HomeActivity.monAnModelListYeuThich.get(position).getMamonan() == HomeActivity.monAnModelList.get(i).getMamonan()){
+                position = i;
+            }
+        }
+
         intent.putExtra("position",position);
-        intent.putExtra("hinhanh",monAnModelListYeuThich.get(position).link_hinh);
-        intent.putExtra("ten",monAnModelListYeuThich.get(position).tenmonan);
-        intent.putExtra("gia",monAnModelListYeuThich.get(position).dongia);
-        intent.putExtra("yeuthich",monAnModelListYeuThich.get(position).yeuthich);
-        intent.putExtra("cate",monAnModelListYeuThich.get(position).getCategory());
-        intent.putExtra("giamgia",monAnModelListYeuThich.get(position).getGiamgia());
-        intent.putExtra("danhgia",monAnModelListYeuThich.get(position).getDanhgia());
+        /*
+        intent.putExtra("key",HomeActivity.monAnModelListYeuThich.get(position).mamonan);
+        intent.putExtra("position",position);
+        intent.putExtra("hinhanh",HomeActivity.monAnModelListYeuThich.get(position).link_hinh);
+        intent.putExtra("ten",HomeActivity.monAnModelListYeuThich.get(position).tenmonan);
+        intent.putExtra("gia",HomeActivity.monAnModelListYeuThich.get(position).dongia);
+        intent.putExtra("yeuthich",HomeActivity.monAnModelListYeuThich.get(position).yeuthich);
+        intent.putExtra("cate",HomeActivity.monAnModelListYeuThich.get(position).getCategory());
+        intent.putExtra("giamgia",HomeActivity.monAnModelListYeuThich.get(position).getGiamgia());
+        intent.putExtra("danhgia",HomeActivity.monAnModelListYeuThich.get(position).getDanhgia());
+
+         */
         startActivity(intent);
 
     }
@@ -191,6 +210,11 @@ public class YeuThichFragment extends Fragment implements RecyclerViewClickInter
 
     @Override
     public void onLongItemClick(int position) {
+
+    }
+
+    @Override
+    public void onButtonclick(int id, int position) {
 
     }
 }

@@ -1,46 +1,41 @@
     package com.example.mamman.Fragments;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mamman.Adapters.BannerAdapter;
 import com.example.mamman.Adapters.CatAdapter;
-import com.example.mamman.Adapters.GreatOffersAdapter;
 import com.example.mamman.Adapters.MonAnAdapter;
 import com.example.mamman.Adapters.MonAnBanChayAdapter;
 import com.example.mamman.CategoryActivity;
 import com.example.mamman.DetailsOfFoodActivity;
 import com.example.mamman.GioHangActivity;
 import com.example.mamman.HomeActivity;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.MainActivity;
-import com.example.mamman.Model.BannerModel;
 import com.example.mamman.Model.CategoryModel;
-import com.example.mamman.Model.GreatOffersModel;
+import com.example.mamman.Model.GioHang;
 import com.example.mamman.Model.MonAnBanChayModel;
 import com.example.mamman.Model.MonAnModel;
 import com.example.mamman.R;
@@ -54,22 +49,26 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrdersFragment extends Fragment implements View.OnClickListener, RecyclerViewClickInterface {
+public class OrdersFragment extends Fragment implements View.OnClickListener, RecyclerViewClickInterface, MonAnClickInterface {
 
 
 
     private String mobile;
 
+
     public OrdersFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e("OrderFragment","onCreate");
     }
 
     public interface SendDataInterface{
@@ -94,6 +93,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     private TextView your_orders,online_ordering_help,address_book,favourite_orders,send_feedback,report_safety_emergency,rate_playstore;
 
 
+
     //category slider start
     private RecyclerView recyclerViewCategory;
     private CatAdapter catAdapter;
@@ -109,7 +109,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     //simple vertical slider start
     private RecyclerView recyclerViewMonAn;
     private MonAnAdapter monAnAdapter;
-    public static List<MonAnModel> monAnModelList;
+    //public static List<MonAnModel> monAnModelList;
     //simple vertical slider end
 
     //great offer horizontal start
@@ -140,9 +140,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     private TextView thongtin;
 
 
-
-
-    //@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -168,7 +165,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
             thongtin.setText("Đăng nhập");
         }
 
-
+        Log.e("OrderFragment","onCreateView");
 
 
         onSetNavigationDrawerEvents();
@@ -190,9 +187,6 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
                 startActivity(intent);
             }
         });
-
-
-
 
 
         //LoadData();
@@ -349,10 +343,10 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
         layoutManagerexclusiveVertical.setOrientation(RecyclerView.VERTICAL);
         exclusiveVerticalRecyclerview.setLayoutManager(layoutManagerexclusiveVertical);
 
-        monAnModelList = new ArrayList<>();
+        HomeActivity.monAnModelList = new ArrayList<>();
 
 
-        monAnAdapter = new MonAnAdapter(monAnModelList,getContext(),OrdersFragment.this);
+        monAnAdapter = new MonAnAdapter(HomeActivity.monAnModelList,getContext(),OrdersFragment.this, OrdersFragment.this);
         exclusiveVerticalRecyclerview.setAdapter(monAnAdapter);
         LoadMonAn();
 
@@ -519,7 +513,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 MonAnModel mon = snapshot.getValue(MonAnModel.class);
                 String key= snapshot.getKey();
-                monAnModelList.add(new MonAnModel(key,mon.link_hinh,mon.tenmonan,mon.category, mon.giamgia,mon.danhgia,mon.dongia,mon.yeuthich));
+                HomeActivity.monAnModelList.add(new MonAnModel(key,mon.link_hinh,mon.tenmonan,mon.category, mon.giamgia,mon.danhgia,mon.dongia,mon.yeuthich));
                 monAnAdapter.notifyDataSetChanged();
             }
 
@@ -582,25 +576,31 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
 
     @Override
     public void onItemClick(int position) {
+
         //Toast.makeText(getContext(),position + monAnModelList.get(position).link_hinh + monAnModelList.get(position).tenmonan+"" +monAnModelList.get(position).dongia,Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(getActivity(), DetailsOfFoodActivity.class);
-        intent.putExtra("key",monAnModelList.get(position).mamonan);
+        /*
+        intent.putExtra("key",HomeActivity.monAnModelList.get(position).mamonan);
         intent.putExtra("position",position);
-        intent.putExtra("hinhanh",monAnModelList.get(position).link_hinh);
-        intent.putExtra("ten",monAnModelList.get(position).tenmonan);
-        intent.putExtra("gia",monAnModelList.get(position).dongia);
-        intent.putExtra("yeuthich",monAnModelList.get(position).yeuthich);
-        intent.putExtra("cate",monAnModelList.get(position).getCategory());
-        intent.putExtra("giamgia",monAnModelList.get(position).getGiamgia());
-        intent.putExtra("danhgia",monAnModelList.get(position).getDanhgia());
+        intent.putExtra("hinhanh",HomeActivity.monAnModelList.get(position).link_hinh);
+        intent.putExtra("ten",HomeActivity.monAnModelList.get(position).tenmonan);
+        intent.putExtra("gia",HomeActivity.monAnModelList.get(position).dongia);
+        intent.putExtra("yeuthich",HomeActivity.monAnModelList.get(position).yeuthich);
+        intent.putExtra("cate",HomeActivity.monAnModelList.get(position).getCategory());
+        intent.putExtra("giamgia",HomeActivity.monAnModelList.get(position).getGiamgia());
+        intent.putExtra("danhgia",HomeActivity.monAnModelList.get(position).getDanhgia());
+
+         */
+        intent.putExtra("position",position);
+
         startActivity(intent);
-
-
 
 
     }
     @Override
     public void onItemClickcat(int position) {
+
         //Toast.makeText(getContext(),position + monAnModelList.get(position).link_hinh + monAnModelList.get(position).tenmonan+"" +monAnModelList.get(position).dongia,Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), CategoryActivity.class);
         intent.putExtra("category",categoryModelList.get(position).getMa_cate());
@@ -613,7 +613,68 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     public void onLongItemClick(int position) {
 
     }
-/*
+
+    @Override
+    public void onButtonclick(int id, int position) {
+        int idlistgiohang=-1;
+
+        switch (id){
+            case R.id.btn_cong:
+                boolean daco=false;
+
+
+                for (int i=0; i< HomeActivity.listgiohang.size(); i++){
+                    if(HomeActivity.monAnModelList.get(position).mamonan == HomeActivity.listgiohang.get(i).getIdsp()){
+                        daco = true;
+                        idlistgiohang = i;
+                        break;
+                    }
+                }
+
+                if(!daco){
+                    HomeActivity.listgiohang.add(new GioHang(HomeActivity.monAnModelList.get(position).mamonan,HomeActivity.monAnModelList.get(position).tenmonan,HomeActivity.monAnModelList.get(position).dongia,HomeActivity.monAnModelList.get(position).link_hinh,1));
+
+
+                }else {
+                    if(idlistgiohang>=0){
+                        int soluong;
+                        soluong = HomeActivity.listgiohang.get(idlistgiohang).getSoluongsp() + 1;
+                        HomeActivity.listgiohang.get(idlistgiohang).setSoluongsp(soluong);
+                    }
+
+                }
+
+                break;
+            case R.id.btn_tru:
+                for (int i=0; i< HomeActivity.listgiohang.size(); i++){
+                    if(HomeActivity.monAnModelList.get(position).mamonan == HomeActivity.listgiohang.get(i).getIdsp()){
+                        idlistgiohang = i;
+                        break;
+                    }
+                }
+                if(idlistgiohang >= 0){
+                    int soluong;
+                    soluong = HomeActivity.listgiohang.get(idlistgiohang).getSoluongsp();
+                    if (soluong>0){
+                        soluong =soluong-1;
+                        HomeActivity.listgiohang.get(idlistgiohang).setSoluongsp(soluong);
+                    }else {
+                        HomeActivity.listgiohang.remove(idlistgiohang);
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
+
+        Fragment f = new GioHangFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_dh, f).commit();
+    }
+
+
+    /*
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

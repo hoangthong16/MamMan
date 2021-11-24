@@ -16,10 +16,10 @@
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
-        android:tint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_button_icon" />
+        app:srcCompat="@drawable/back_button_icon"
+        app:tint="@color/black" />
 
     <ImageButton
         android:id="@+id/favourite"

@@ -1,5 +1,7 @@
 package com.example.mamman.Model;
 
+import java.util.List;
+
 public class User {
     public String uid,name,email,password,phonenumber,address,date;
 
@@ -14,6 +16,8 @@ public class User {
         this.phonenumber = phonenumber;
         this.address = address;
         this.date = date;
+
+
     }
 
     public String getUid() {
@@ -71,4 +75,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

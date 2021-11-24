@@ -121,6 +121,7 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
             @Override
             public void onClick(View v) {
                 finish();
+
             }
         });
 
@@ -301,6 +302,8 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
                 dialog.dismiss();
                 DonHangModel donHangModel = new DonHangModel(null, HomeActivity.listkhachhang.get(0).getUid(), HomeActivity.listkhachhang.get(0).name, HomeActivity.listkhachhang.get(0).phonenumber, HomeActivity.listkhachhang.get(0).getAddress(), "huy");
                 databaseReferenceDonHang.child(DonHangID).setValue(donHangModel);
+                Intent intent= new Intent(GioHangActivity.this,HomeActivity.class);
+                startActivity(intent);
             }
         });
         builder.show();

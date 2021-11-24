@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.mamman.Adapters.MonAnAdapter;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.Model.MonAnModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -34,7 +35,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity implements RecyclerViewClickInterface {
+public class SearchActivity extends AppCompatActivity implements RecyclerViewClickInterface, MonAnClickInterface {
 
     private RecyclerView recyclerViewSearch;
     private ImageButton btback;
@@ -135,7 +136,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
                         }
                     }
 
-                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelList,getApplicationContext(),SearchActivity.this);
+                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelList,getApplicationContext(),SearchActivity.this, SearchActivity.this);
                     recyclerViewSearch.setAdapter(monAnAdapter);
                     monAnAdapter.notifyDataSetChanged();
 
@@ -169,6 +170,11 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
 
     @Override
     public void onLongItemClick(int position) {
+
+    }
+
+    @Override
+    public void onButtonclick(int id, int position) {
 
     }
 }
