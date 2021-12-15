@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mamman.GioHangActivity;
 import com.example.mamman.HomeActivity;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.Model.GioHang;
 import com.example.mamman.Model.MonAnModel;
@@ -27,13 +28,15 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
 
     private List<GioHang> gioHangList;
     private Context context;
+    private static MonAnClickInterface monAnClickInterface;
     private static RecyclerViewClickInterface recyclerViewClickInterface;
 
 
-    public GioHangAdapter(List<GioHang> gioHangList, Context context,RecyclerViewClickInterface recyclerViewClickInterface) {
+    public GioHangAdapter(List<GioHang> gioHangList, Context context,RecyclerViewClickInterface recyclerViewClickInterface, MonAnClickInterface monAnClickInterface) {
         this.gioHangList = gioHangList;
         this.context = context;
-        this.recyclerViewClickInterface=recyclerViewClickInterface;
+        this.recyclerViewClickInterface = recyclerViewClickInterface;
+        this.monAnClickInterface=monAnClickInterface;
     }
 
     @NonNull
@@ -57,23 +60,42 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
         holder.sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerViewClickInterface.onItemClick(position);
-                int slmoinhat= Integer.parseInt(holder.soluong.getText().toString()) - 1;
-                int slht = HomeActivity.listgiohang.get(position).getSoluongsp();
-                float giaht= HomeActivity.listgiohang.get(position).getGiasp();
-                HomeActivity.listgiohang.get(position).setSoluongsp(slmoinhat);
-                float giamoinhat= (giaht *slmoinhat)/slht;
-                HomeActivity.listgiohang.get(position).setGiasp(giamoinhat);
-                holder.gia.setText(decimalFormat.format(giamoinhat)+ " Đ");
-                GioHangActivity.TongTien();
-                holder.soluong.setText(String.valueOf(slmoinhat));
+
+                int sl = HomeActivity.listgiohang.get(position).getSoluongsp();
+                sl=sl-1;
+                if (sl>0){
+                    HomeActivity.listgiohang.get(position).setSoluongsp(sl);
+                    holder.soluong.setText(HomeActivity.listgiohang.get(position).getSoluongsp()+"");
+                    holder.gia.setText(decimalFormat.format(HomeActivity.listgiohang.get(position).getGiasp() * HomeActivity.listgiohang.get(position).getSoluongsp())+ " Đ");
+                    GioHangActivity.TongTien();
+                }else {
+                    monAnClickInterface.onButtonclick(v.getId(),position);
+                }
+
+
+
             }
         });
 
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerViewClickInterface.onItemClick(position);
+
+
+                int sl = HomeActivity.listgiohang.get(position).getSoluongsp();
+                sl=sl+1;
+                HomeActivity.listgiohang.get(position).setSoluongsp(sl);
+
+                holder.soluong.setText(HomeActivity.listgiohang.get(position).getSoluongsp()+"");
+                holder.gia.setText(decimalFormat.format(HomeActivity.listgiohang.get(position).getGiasp() * HomeActivity.listgiohang.get(position).getSoluongsp())+ " Đ");
+                GioHangActivity.TongTien();
+
+                monAnClickInterface.onButtonclick(v.getId(),position);
+
+
+
+
+                /*
                 int slmoinhat= Integer.parseInt(holder.soluong.getText().toString()) + 1;
                 int slht = HomeActivity.listgiohang.get(position).getSoluongsp();
                 float giaht= HomeActivity.listgiohang.get(position).getGiasp();
@@ -83,6 +105,8 @@ public class GioHangAdapter extends RecyclerView.Adapter<GioHangAdapter.GioHangV
                 holder.gia.setText(decimalFormat.format(giamoinhat)+ " Đ");
                 GioHangActivity.TongTien();
                 holder.soluong.setText(String.valueOf(slmoinhat));
+
+                 */
             }
         });
 

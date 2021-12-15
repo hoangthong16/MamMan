@@ -72,6 +72,8 @@ public class MonAnAdapter extends RecyclerView.Adapter<MonAnAdapter.MonAnViewHol
         holder.giamgia.setText(giagiatheophantram.format(monAnModel.getGiamgia()*100)+" %");
         holder.dongia.setText(decimalFormat.format(monAnModel.getDongia()) +" Đ");
         holder.danhgia.setText(danhgiaformat.format(monAnModel.getDanhgia()));
+        holder.btn_tru.setVisibility(View.INVISIBLE);
+        holder.tv_soluong.setVisibility(View.INVISIBLE);
         if(HomeActivity.listgiohang !=null){
             for(int i = 0; i<HomeActivity.listgiohang.size();i++) {
                 if (HomeActivity.listgiohang.get(i).getIdsp() == HomeActivity.monAnModelList.get(position).getMamonan()) {

@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,6 +70,30 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("OrderFragment","onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("OrderFragment","onStart");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("OrderFragment","onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("OrderFragment","onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("OrderFragment","onDestroy");
     }
 
     public interface SendDataInterface{
@@ -196,6 +221,15 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("OrderFragment","onResume");
+
+        monAnAdapter.notifyDataSetChanged();
+
+
+        //update fragment gio hang
+        Fragment f = new GioHangFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_dh, f).commit();
 
         if(HomeActivity.listkhachhang.size()>0){
             //Toast.makeText(getContext(),HomeActivity.listkhachhang.get(0).getEmail(),Toast.LENGTH_LONG).show();
@@ -253,77 +287,7 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
         recyclerViewBanner.setAdapter(bannerAdapter);
         bannerAdapter.notifyDataSetChanged();
         //banner model list end
-/**
-        //simple vertical model list start
-        recyclerViewMonAn =(RecyclerView) view.findViewById(R.id.recyclerViewSimple);
 
-        LinearLayoutManager layoutManagerSimpleVerticalSlider = new LinearLayoutManager(getContext());
-        layoutManagerSimpleVerticalSlider.setOrientation(RecyclerView.VERTICAL);
-        recyclerViewMonAn.setLayoutManager(layoutManagerSimpleVerticalSlider);
-
-        monAnModelList = new ArrayList<>();
-        //monAnModelList.add(new MonAnModel("https://firebasestorage.googleapis.com/v0/b/mammamtest.appspot.com/o/%C4%83n%20v%E1%BA%B7t.png?alt=media&token=7d3b8a90-db54-4510-bff8-de519b06dff5","monn","Cơm",1,2,3));
-
-        monAnAdapter = new MonAnAdapter(monAnModelList,getContext(),this);
-        recyclerViewMonAn.setAdapter(monAnAdapter);
-        LoadMonAn();
-
-        //simple vertical model list end
-
-        //great offers model list start
-        greatGreatOffersHorizontal =(RecyclerView) view.findViewById(R.id.recyclerViewgreatOffersHorizontal);
-        LinearLayoutManager layoutManagerGreatOffers = new LinearLayoutManager(getContext());
-        layoutManagerGreatOffers.setOrientation(RecyclerView.HORIZONTAL);
-        greatGreatOffersHorizontal.setLayoutManager(layoutManagerGreatOffers);
-
-        monAnBanChayModelList = new ArrayList<>();
-
-        monAnBanChayAdapter = new MonAnBanChayAdapter(monAnBanChayModelList,getContext());
-        greatGreatOffersHorizontal.setAdapter(monAnBanChayAdapter);
-        LoadMonAnBanChay();
-        //great offers model list end
-
-        //new great offers vertical slider start
-        greatOffersRecyclerViewVertical =(RecyclerView) view.findViewById(R.id.greatOffersRecyclerViewVertical);
-        LinearLayoutManager layoutManagerVerticalGreatOffers= new LinearLayoutManager(getContext());
-        layoutManagerVerticalGreatOffers.setOrientation(RecyclerView.VERTICAL);
-        greatOffersRecyclerViewVertical.setLayoutManager(layoutManagerVerticalGreatOffers);
-
-        monAnModelList = new ArrayList<>();
-
-
-        monAnAdapter = new MonAnAdapter(monAnModelList,getContext(),this);
-        greatOffersRecyclerViewVertical.setAdapter(monAnAdapter);
-        LoadMonAn();
-        //new great offers vertical slider end
-
-        //new arrival horizontal model list start
-        newArrivalHorizontalRecyclerview =(RecyclerView) view.findViewById(R.id.newArrivalHorizontalRecyclerview);
-        LinearLayoutManager layoutManagerhorizonNewArrival = new LinearLayoutManager(getContext());
-        layoutManagerhorizonNewArrival.setOrientation(RecyclerView.HORIZONTAL);
-        newArrivalHorizontalRecyclerview.setLayoutManager(layoutManagerhorizonNewArrival);
-
-        monAnBanChayModelList = new ArrayList<>();
-        monAnBanChayAdapter = new MonAnBanChayAdapter(monAnBanChayModelList,getContext());
-        newArrivalHorizontalRecyclerview.setAdapter(monAnBanChayAdapter);
-        LoadMonAnBanChay();
-        //new arrival horizontal model list end
-
-        //new arrival vertical slider start
-        newArrivalVerticalRecyclerview =(RecyclerView) view.findViewById(R.id.newArrivalVerticalRecyclerview);
-        LinearLayoutManager layoutManagerVerticalNewArrival= new LinearLayoutManager(getContext());
-        layoutManagerVerticalNewArrival.setOrientation(RecyclerView.VERTICAL);
-        newArrivalVerticalRecyclerview.setLayoutManager(layoutManagerVerticalNewArrival);
-
-        monAnModelList = new ArrayList<>();
-
-
-        monAnAdapter = new MonAnAdapter(monAnModelList,getContext(),this);
-        newArrivalVerticalRecyclerview.setAdapter(monAnAdapter);
-        //LoadMonAn();
-
-        //new arrival vertical slider end
-**/
         //new arrival horizontal model list start
         exclusiveHorizontalRecyclerview =(RecyclerView) view.findViewById(R.id.exclusiveHorizontalRecyclerview);
         LinearLayoutManager layoutManagerexclusiveHorizon = new LinearLayoutManager(getContext());
@@ -331,6 +295,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
         exclusiveHorizontalRecyclerview.setLayoutManager(layoutManagerexclusiveHorizon);
 
         monAnBanChayModelList = new ArrayList<>();
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(exclusiveHorizontalRecyclerview.getContext(),layoutManagerexclusiveHorizon.getOrientation());
+        exclusiveHorizontalRecyclerview.addItemDecoration(dividerItemDecoration);
 
         monAnBanChayAdapter = new MonAnBanChayAdapter(monAnBanChayModelList,getContext(),OrdersFragment.this);
         exclusiveHorizontalRecyclerview.setAdapter(monAnBanChayAdapter);
@@ -344,6 +311,9 @@ public class OrdersFragment extends Fragment implements View.OnClickListener, Re
         exclusiveVerticalRecyclerview.setLayoutManager(layoutManagerexclusiveVertical);
 
         HomeActivity.monAnModelList = new ArrayList<>();
+
+        DividerItemDecoration dividerItemDecorationMonAn = new DividerItemDecoration(exclusiveVerticalRecyclerview.getContext(),layoutManagerexclusiveVertical.getOrientation());
+        exclusiveVerticalRecyclerview.addItemDecoration(dividerItemDecorationMonAn);
 
 
         monAnAdapter = new MonAnAdapter(HomeActivity.monAnModelList,getContext(),OrdersFragment.this, OrdersFragment.this);

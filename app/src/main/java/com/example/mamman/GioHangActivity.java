@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,6 +23,7 @@ import android.widget.Toolbar;
 import com.example.mamman.Adapters.BannerAdapter;
 import com.example.mamman.Adapters.GioHangAdapter;
 import com.example.mamman.Adapters.MonAnAdapter;
+import com.example.mamman.Interface.MonAnClickInterface;
 import com.example.mamman.Interface.RecyclerViewClickInterface;
 import com.example.mamman.Model.ChiTietDonHang;
 import com.example.mamman.Model.DonHangModel;
@@ -41,7 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 
-public class GioHangActivity extends AppCompatActivity implements RecyclerViewClickInterface {
+public class GioHangActivity extends AppCompatActivity implements RecyclerViewClickInterface, MonAnClickInterface {
     RecyclerView recyclerViewGioHang;
     static TextView tongtien;
     TextView thongbao;
@@ -55,6 +57,8 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
     public String DonHangID;
     boolean xacnhan=false;
 
+    private static final String TAG="GioHangActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +66,14 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
 
         AnhXa();
         progressBar.setVisibility(View.INVISIBLE);
+        try {
+            int leng=HomeActivity.listgiohang.size();
+            Toast.makeText(GioHangActivity.this,String.valueOf(leng),Toast.LENGTH_LONG).show();
+        }catch (Exception e){
+            Log.e(TAG,"listgiohang null");
+        }
 
-        int leng=HomeActivity.listgiohang.size();
-        Toast.makeText(GioHangActivity.this,String.valueOf(leng),Toast.LENGTH_LONG).show();
+
         CheckData();
 
 
@@ -132,7 +141,7 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
     public static void TongTien(){
         float tonggiatien=0;
         for (int i=0;i<HomeActivity.listgiohang.size();i++){
-            tonggiatien+=HomeActivity.listgiohang.get(i).getGiasp();
+            tonggiatien+=HomeActivity.listgiohang.get(i).getGiasp() * HomeActivity.listgiohang.get(i).getSoluongsp();
         }
         DecimalFormat decimalFormat=new DecimalFormat("###,###,###");
         tongtien.setText(decimalFormat.format(tonggiatien)+ " Đ");
@@ -149,7 +158,7 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
         LinearLayoutManager layoutManagerBanner = new LinearLayoutManager(this);
         layoutManagerBanner.setOrientation(RecyclerView.VERTICAL);
         recyclerViewGioHang.setLayoutManager(layoutManagerBanner);
-        gioHangAdapter= new GioHangAdapter(HomeActivity.listgiohang,GioHangActivity.this,this);
+        gioHangAdapter= new GioHangAdapter(HomeActivity.listgiohang,GioHangActivity.this,this,this);
         recyclerViewGioHang.setAdapter(gioHangAdapter);
     }
 
@@ -220,6 +229,7 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
     }
     public void removeAt(int position){
         HomeActivity.listgiohang.remove(position);
+        TongTien();
         gioHangAdapter.notifyItemRemoved(position);
         gioHangAdapter.notifyItemRangeChanged(position, HomeActivity.listgiohang.size());
     }
@@ -310,4 +320,20 @@ public class GioHangActivity extends AppCompatActivity implements RecyclerViewCl
 
     }
 
+    @Override
+    public void onButtonclick(int id, int position) {
+        switch (id){
+            case R.id.sub:
+                //so luong <=0
+                HomeActivity.listgiohang.remove(position);
+                TongTien();
+                gioHangAdapter.notifyItemRemoved(position);
+                gioHangAdapter.notifyItemRangeChanged(position, HomeActivity.listgiohang.size());
+                break;
+            case R.id.add:
+                break;
+            default:
+                break;
+        }
+    }
 }

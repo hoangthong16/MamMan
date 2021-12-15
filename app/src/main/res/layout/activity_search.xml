@@ -25,29 +25,38 @@
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
-            android:tint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/back_button_icon" />
+            app:srcCompat="@drawable/back_button_icon"
+            app:tint="@color/black" />
 
         <EditText
             android:id="@+id/search"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="56dp"
             android:background="@drawable/skip_button"
             android:drawableLeft="@drawable/search"
             android:elevation="1dp"
             android:hint="Search for Mammam"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/btback"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_nghe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/search"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mic" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

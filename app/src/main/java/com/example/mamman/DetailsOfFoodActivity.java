@@ -1,35 +1,53 @@
 package com.example.mamman;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.mamman.Adapters.BannerAdapter;
+import com.example.mamman.Adapters.DanhGiaAdapter;
 import com.example.mamman.Adapters.DetailsOfFoodAdapter;
 import com.example.mamman.Adapters.MonAnAdapter;
 import com.example.mamman.Fragments.OrdersFragment;
+import com.example.mamman.Model.DanhGia;
 import com.example.mamman.Model.GioHang;
+import com.example.mamman.Model.MonAnBanChayModel;
 import com.example.mamman.Model.MonAnModel;
 import com.example.mamman.Model.User;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.security.AccessController.getContext;
 
@@ -37,7 +55,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
     ImageButton back,yeuthich;
     ImageView img;
     Button sub,add,themvaogiohang;
-    TextView ten,soluong,gia;
+    TextView ten,soluong,gia,tv_vietdanhgia;
     ConstraintLayout details;
     private int so=0;
     private int position;
@@ -46,10 +64,20 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
     private float sgia,sgiamgia,sdanhgia;
     private int sposition;
     private boolean syeuthich;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,databaseReferenceDanhGia;
+    RecyclerView recyclerViewDanhGia;
+
+    //item bottom_sheet_vietdanhgia
+    BottomSheetDialog bottomSheetDialog;
+    Button btn_huy, btn_gui;
+    EditText noidung;
+    RatingBar ratingBarDanhGia;
+
 
     private DetailsOfFoodAdapter detailsOfFoodAdapter;
     private List<MonAnModel> monAnModelList;
+    private List<DanhGia> danhGiaList;
+    private DanhGiaAdapter danhGiaAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +91,26 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         soluong=(TextView)findViewById(R.id.textView5);
         gia=(TextView)findViewById(R.id.textView13);
         themvaogiohang=(Button)findViewById(R.id.themvaogiohang);
+        recyclerViewDanhGia= (RecyclerView)findViewById(R.id.recyclerViewDanhGia);
+        tv_vietdanhgia = (TextView)findViewById(R.id.tv_vietdanhgia);
+
+
+
+
+        databaseReferenceDanhGia= FirebaseDatabase.getInstance().getReference("DanhGia");
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        recyclerViewDanhGia.setLayoutManager(layoutManager);
+
+        danhGiaList = new ArrayList<>();
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDanhGia.getContext(),layoutManager.getOrientation());
+        recyclerViewDanhGia.addItemDecoration(dividerItemDecoration);
+
+        danhGiaAdapter = new DanhGiaAdapter(danhGiaList,this);
+        recyclerViewDanhGia.setAdapter(danhGiaAdapter);
+
 
         position = getIntent().getIntExtra("position",-1);
         /*
@@ -98,6 +146,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         ten.setText(sten);
         Picasso.get().load(shinh).into(img);
         soluong.setText(so+"");
+
         gia.setText(sgia+"");
         sub.setBackgroundResource(R.drawable.sub_gray);
         if (syeuthich){
@@ -126,6 +175,12 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         add.setOnClickListener(this);
         themvaogiohang.setOnClickListener(this);
         yeuthich.setOnClickListener(this);
+        tv_vietdanhgia.setOnClickListener(this);
+
+        loadDanhGia();
+
+
+
 
 
     }
@@ -150,6 +205,125 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
 
 
      */
+
+    private void loadDanhGia(){
+        Query query = databaseReferenceDanhGia.orderByChild("id_MonAn").equalTo(skey);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.hasChildren()){
+                    danhGiaList.clear();
+                    for (DataSnapshot dss: snapshot.getChildren()){
+                        final DanhGia danhgia = dss.getValue(DanhGia.class);
+                        danhGiaList.add(new DanhGia(dss.getKey(),danhgia.getId_User(),danhgia.getId_MonAn(),danhgia.getTen(),danhgia.getNoiDung(),danhgia.getStar(),danhgia.getTime()));
+                        danhGiaAdapter.notifyDataSetChanged();
+
+                    }
+                }
+
+                /*
+                if(snapshot.hasChildren()){
+                    monAnModelList.clear();
+                    for (DataSnapshot dss: snapshot.getChildren()){
+                        final MonAnModel monAnModel= dss.getValue(MonAnModel.class);
+                        monAnModelList.add(monAnModel);
+                        if(dss.getKey() != null){
+                            key.add(dss.getKey());
+                        }
+                    }
+
+                    MonAnAdapter monAnAdapter=new MonAnAdapter(monAnModelList,getApplicationContext(),SearchActivity.this, SearchActivity.this);
+                    recyclerViewSearch.setAdapter(monAnAdapter);
+                    monAnAdapter.notifyDataSetChanged();
+
+                }
+                 */
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        /*
+        databaseReferenceDanhGia.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                String key = snapshot.getKey();
+                DanhGia danhgia = snapshot.getValue(DanhGia.class);
+
+                danhGiaList.add(new DanhGia(key,danhgia.getId_User(),danhgia.getId_MonAn(),danhgia.getTen(),danhgia.getNoiDung(),danhgia.getStar(),danhgia.getTime()));
+                danhGiaAdapter.notifyDataSetChanged();
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+         */
+    }
+
+    private void vietDanhGia(){
+        View viewDiaLog = getLayoutInflater().inflate(R.layout.bottom_sheet_vietdanhgia,null);
+
+        //bottom_sheet_vietdanhgia
+        btn_huy = (Button)viewDiaLog.findViewById(R.id.btn_huy);
+        btn_gui = (Button) viewDiaLog.findViewById(R.id.btn_gui);
+        ratingBarDanhGia = (RatingBar)viewDiaLog.findViewById(R.id.ratingBarDanhGia);
+        noidung = (EditText)viewDiaLog.findViewById(R.id.noidung);
+
+        bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(viewDiaLog);
+        bottomSheetDialog.show();
+        bottomSheetDialog.setCancelable(false);
+
+        btn_huy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        btn_gui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(HomeActivity.listkhachhang.size()>0){
+                    DanhGia danhGia = new DanhGia(null,HomeActivity.listkhachhang.get(0).getUid(),skey,HomeActivity.listkhachhang.get(0).getName(),noidung.getText().toString(),ratingBarDanhGia.getRating(), TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+                    databaseReferenceDanhGia.child("DanhGia" +TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())).setValue(danhGia);
+                }else {
+                    DanhGia danhGia = new DanhGia(null,"",skey,"Ẩn danh",noidung.getText().toString(),ratingBarDanhGia.getRating(), TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+                    databaseReferenceDanhGia.push().setValue(danhGia);
+                }
+
+                bottomSheetDialog.dismiss();
+
+            }
+        });
+
+    }
+
     private void themgiohang(){
         if(HomeActivity.listgiohang.size()>0){
             boolean exists=false;
@@ -176,6 +350,28 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
         finish();
     }
 
+    private void update(){
+        if (HomeActivity.listgiohang.size()>0){
+            boolean exists=false;
+            for (int i = 0; i<HomeActivity.listgiohang.size();i++) {
+                if (HomeActivity.listgiohang.get(i).getIdsp() == skey) {
+                    if(so>0){
+                        HomeActivity.listgiohang.get(i).setSoluongsp(so);
+                    }else{
+                        HomeActivity.listgiohang.remove(i);
+                    }
+
+                    exists = true;
+                }
+            }
+            if (exists ==false){
+                HomeActivity.listgiohang.add(new GioHang(skey,sten,sgia,shinh,so));
+            }
+        }else {
+            HomeActivity.listgiohang.add(new GioHang(skey,sten,sgia,shinh,so));
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -191,6 +387,7 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
                 if(so>0){
                     sub.setBackgroundResource(R.drawable.sub);
                 }
+                update();
                 break;
             case R.id.button4:
                 if (so>0){
@@ -199,10 +396,15 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
                 soluong.setText(so+"");
                 if (so<1){
                     sub.setBackgroundResource(R.drawable.sub_gray);
+                    sub.setEnabled(false);
                 }
+                update();
                 break;
             case R.id.themvaogiohang:
-                themgiohang();
+                //themgiohang();
+                Intent intent= new Intent(getApplicationContext(),GioHangActivity.class);
+                startActivity(intent);
+                finish();
                 break;
 
             case R.id.favourite:
@@ -221,9 +423,11 @@ public class DetailsOfFoodActivity extends AppCompatActivity implements View.OnC
                         databaseReference.child(skey).setValue(monAnModel);
                     }
                 }
-
-                
                 break;
+            case R.id.tv_vietdanhgia:
+                vietDanhGia();
+                break;
+
         }
     }
 

@@ -1,16 +1,22 @@
 package com.example.mamman;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.TintableBackgroundView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.speech.RecognizerIntent;
+import android.telecom.RemoteConference;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +40,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity implements RecyclerViewClickInterface, MonAnClickInterface {
 
     private RecyclerView recyclerViewSearch;
     private ImageButton btback;
     private EditText search;
+    private ImageButton btn_nghe;
     List<MonAnModel> monAnModelList;
     private DatabaseReference mData;
     FirebaseRecyclerAdapter<MonAnModel, MonAnAdapter.MonAnViewHolder> adapter;
     FirebaseRecyclerOptions<MonAnModel> options;
     List<String> key;
+
+    private final int REQ_CODE_SPEECH= 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +63,20 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         recyclerViewSearch= (RecyclerView)findViewById(R.id.recyclerViewSearch);
         btback=(ImageButton)findViewById(R.id.btback);
         search=(EditText)findViewById(R.id.search);
+        btn_nghe = (ImageButton)findViewById(R.id.btn_nghe);
         monAnModelList = new ArrayList<>();
 
         LinearLayoutManager layoutManagerBanner = new LinearLayoutManager(this);
         layoutManagerBanner.setOrientation(RecyclerView.VERTICAL);
         recyclerViewSearch.setLayoutManager(layoutManagerBanner);
         recyclerViewSearch.setVisibility(View.INVISIBLE);
+
+        btn_nghe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speech_to_text();
+            }
+        });
 
         btback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +100,7 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
             public void afterTextChanged(Editable s) {
                 if(!s.toString().isEmpty()){
                     recyclerViewSearch.setVisibility(View.VISIBLE);
-                    search(s.toString());
+                    Search(s.toString());
 
                 }else {
                     recyclerViewSearch.setVisibility(View.INVISIBLE);
@@ -113,7 +131,53 @@ public class SearchActivity extends AppCompatActivity implements RecyclerViewCli
         recyclerViewSearch.setAdapter(adapter);
     }
 
-    private void search(String s){
+    private void speech_to_text(){
+        //gọi nhận dạng giọng nói
+
+
+
+
+        try {
+            Log.e("nhandan","da an");
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            // lấy ngôn ngữ mặc định trên máy
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Đang nghe");
+            startActivityForResult(intent,REQ_CODE_SPEECH);
+        }catch (ActivityNotFoundException e){
+            Log.e("nhận diện", e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQ_CODE_SPEECH: {
+
+                if(resultCode ==RESULT_OK && data != null){
+
+                    List<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String text = result.get(0);
+                    String first = text.substring(0,1);
+                    String conlai= text.substring(1,text.length());
+                    first = first.toUpperCase();
+                    text = first+conlai;
+
+                    search.setText(text+"");
+                    //Search(text+"");
+
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    private void Search(String s){
         key = new ArrayList<>();
         /*
         String stringUpper= s.toString().toUpperCase();

@@ -61,5 +61,9 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.huawei.hms:push:5.0.4.302'
     implementation 'com.huawei.hms:location:5.0.4.300'
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    //implementation 'com.github.momo-wallet:mobile-sdk:1.0.7'
 }
 apply plugin: 'com.huawei.agconnect'

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -126,6 +127,10 @@ public class YeuThichFragment extends Fragment implements RecyclerViewClickInter
         LinearLayoutManager layoutManagerBanner = new LinearLayoutManager(getContext());
         layoutManagerBanner.setOrientation(RecyclerView.VERTICAL);
         recyclerViewyeuthich.setLayoutManager(layoutManagerBanner);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewyeuthich.getContext(),layoutManagerBanner.getOrientation());
+        recyclerViewyeuthich.addItemDecoration(dividerItemDecoration);
+
+
         adapter.startListening();
         recyclerViewyeuthich.setAdapter(adapter);
 

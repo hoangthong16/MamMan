@@ -6,9 +6,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.mamman.Adapters.DanhGiaAdapter;
 import com.example.mamman.Adapters.DonHangAdapter;
 import com.example.mamman.Adapters.MonAnAdapter;
 import com.example.mamman.ChiTietDonHangActivity;
@@ -42,7 +46,7 @@ import java.util.List;
  * Use the {@link DonHangFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DonHangFragment extends Fragment implements RecyclerViewClickInterface {
+public class DonHangFragment extends Fragment implements RecyclerViewClickInterface, SwipeRefreshLayout.OnRefreshListener {
     private View view;
     RecyclerView recyclerViewdonhang;
     private DonHangAdapter donHangAdapter;
@@ -53,6 +57,8 @@ public class DonHangFragment extends Fragment implements RecyclerViewClickInterf
     FirebaseRecyclerAdapter<DonHangModel, DonHangAdapter.DonHangViewHolder> adapter;
     FirebaseRecyclerOptions<DonHangModel> options;
     List<DonHangModel> donhangtheotrangthaihoanthanh,getDonhangtheotrangthaihuy;
+
+    SwipeRefreshLayout fragment_don_hang;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -100,6 +106,9 @@ public class DonHangFragment extends Fragment implements RecyclerViewClickInterf
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_don_hang, container, false);
 
+        fragment_don_hang = (SwipeRefreshLayout) view.findViewById(R.id.fragment_don_hang);
+        fragment_don_hang.setOnRefreshListener(this);
+
 
         recyclerViewdonhang = (RecyclerView) view.findViewById(R.id.recyclerViewdonhang);
         bttrangthai= (Button) view.findViewById(R.id.bttrangthai);
@@ -111,6 +120,8 @@ public class DonHangFragment extends Fragment implements RecyclerViewClickInterf
         layoutDonHang.setOrientation(RecyclerView.VERTICAL);
         recyclerViewdonhang.setLayoutManager(layoutDonHang);
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewdonhang.getContext(),layoutDonHang.getOrientation());
+        recyclerViewdonhang.addItemDecoration(dividerItemDecoration);
 
         donHangAdapter = new DonHangAdapter(HomeActivity.donHangModelList,getContext(),DonHangFragment.this);
         recyclerViewdonhang.setAdapter(donHangAdapter);
@@ -221,5 +232,18 @@ public class DonHangFragment extends Fragment implements RecyclerViewClickInterf
     @Override
     public void onLongItemClick(int position) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        donHangAdapter = new DonHangAdapter(HomeActivity.donHangModelList,getContext(),DonHangFragment.this);
+        recyclerViewdonhang.setAdapter(donHangAdapter);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fragment_don_hang.setRefreshing(false);
+            }
+        },3000);
     }
 }
